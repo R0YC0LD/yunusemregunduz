@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yunus Emre Gündüz | Komedyen & Çizer</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Permanent+Marker&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -34,10 +34,49 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
-            overflow: hidden; /* Intro sırasında scroll engellemek için */
+            overflow: hidden; 
+            position: relative;
         }
 
-        /* --- INTRO EKRANI STİLLERİ --- */
+        /* --- ARKA PLAN GÜLÜŞ EFEKTLERİ --- */
+        #laughter-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .laugh-text {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.03); /* Çok silik, dikkat dağıtmaz */
+            font-family: 'Permanent Marker', cursive, sans-serif;
+            user-select: none;
+            font-weight: bold;
+            animation: floatLaugh linear infinite;
+        }
+
+        @keyframes floatLaugh {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.15;
+            }
+            80% {
+                opacity: 0.15;
+            }
+            100% {
+                transform: translateY(-20vh) rotate(20deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* --- INTRO EKRANI --- */
         #intro-overlay {
             position: fixed;
             top: 0;
@@ -78,7 +117,7 @@
             transition: width 0.5s ease;
         }
 
-        /* --- ANA KART STİLLERİ --- */
+        /* --- ANA KART --- */
         .profile-card {
             background-color: var(--card-bg);
             width: 100%;
@@ -88,9 +127,10 @@
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             position: relative;
-            opacity: 0; /* Intro bitene kadar gizli */
+            opacity: 0;
             transform: scale(0.95);
             transition: opacity 1s ease, transform 1s ease;
+            z-index: 10;
         }
 
         .profile-card.visible {
@@ -186,7 +226,7 @@
         .social-footer {
             display: flex;
             justify-content: center;
-            gap: 20px; /* İkonlar arası boşluk */
+            gap: 20px; 
             margin-top: 10px;
             border-top: 1px solid rgba(255,255,255,0.05);
             padding-top: 25px;
@@ -198,6 +238,7 @@
             color: var(--text-secondary);
             font-size: 1.5rem;
             transition: color 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
         }
 
         .social-icon:hover {
@@ -205,13 +246,11 @@
             transform: scale(1.1);
         }
 
-        /* İkon Renkleri */
         .social-icon.instagram:hover { color: #e1306c; }
         .social-icon.youtube:hover { color: #ff0000; }
-        .social-icon.twitter:hover { color: #1da1f2; }
-        .social-icon.spotify:hover { color: #1DB954; } /* Spotify Yeşili */
+        .social-icon.twitter:hover { color: #ffffff; /* X logosu genelde beyaz veya siyah kullanılır */ }
+        .social-icon.spotify:hover { color: #1DB954; } 
 
-        /* --- YAPIMCI İMZASI --- */
         .creator-credit {
             font-size: 0.75rem;
             color: #4a4a4a;
@@ -235,6 +274,8 @@
     </style>
 </head>
 <body>
+
+    <div id="laughter-bg"></div>
 
     <div id="intro-overlay">
         <div class="intro-text" id="intro-message">Yükleniyor...</div>
@@ -302,12 +343,36 @@
             return age;
         }
 
+        // --- ARKA PLAN GÜLÜŞ EFEKTİ ---
+        function createBackgroundEffects() {
+            const container = document.getElementById('laughter-bg');
+            const words = ["HAHA", "HİHİ", "LOL", "HO!", "HA!", "KİKİKİ", "🤣", "😆", "HAHAHA"];
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const span = document.createElement('span');
+                span.classList.add('laugh-text');
+                span.innerText = words[Math.floor(Math.random() * words.length)];
+                span.style.left = Math.random() * 100 + 'vw';
+                const size = 1 + Math.random() * 3;
+                span.style.fontSize = size + 'rem';
+                const duration = 5 + Math.random() * 10;
+                span.style.animationDuration = duration + 's';
+                const delay = Math.random() * 5;
+                span.style.animationDelay = '-' + delay + 's';
+                container.appendChild(span);
+            }
+        }
+
         // --- INTRO VE BAŞLANGIÇ ---
         document.addEventListener('DOMContentLoaded', function() {
             // Yaşı yazdır
             const birthDate = '1990-10-27';
             const age = calculateAge(birthDate);
             document.getElementById('age-badge').innerHTML = `<i class="fas fa-hourglass-half"></i> ${age} Yaşında`;
+
+            // Efektleri Başlat
+            createBackgroundEffects();
 
             // Intro Animasyonu
             const introOverlay = document.getElementById('intro-overlay');
@@ -316,7 +381,6 @@
             const mainCard = document.getElementById('main-card');
             const body = document.body;
 
-            // Gösterilecek Mesajlar
             const messages = [
                 "Anılar derleniyor...",
                 "Şakalar hazırlanıyor...",
@@ -325,26 +389,23 @@
             ];
 
             let step = 0;
-            const stepDuration = 1800; // Her mesajın ekranda kalma süresi (ms)
+            const stepDuration = 1800;
 
             function showNextMessage() {
                 if (step < messages.length) {
-                    // Metni değiştir ve efekti tetikle
                     introMessage.classList.remove('active');
                     
                     setTimeout(() => {
                         introMessage.innerText = messages[step];
                         introMessage.classList.add('active');
                         
-                        // İlerleme çubuğunu güncelle
                         const progress = ((step + 1) / messages.length) * 100;
                         loaderLine.style.width = `${progress}%`;
                         
                         step++;
                         setTimeout(showNextMessage, stepDuration);
-                    }, 500); // Fade out süresi kadar bekle
+                    }, 500);
                 } else {
-                    // Intro bitti, ana ekranı aç
                     finishIntro();
                 }
             }
@@ -352,15 +413,12 @@
             function finishIntro() {
                 introOverlay.style.opacity = '0';
                 introOverlay.style.visibility = 'hidden';
-                
-                // Ana kartı görünür yap
                 setTimeout(() => {
                     mainCard.classList.add('visible');
-                    body.style.overflow = 'auto'; // Scroll'u tekrar aç
+                    body.style.overflow = 'auto'; 
                 }, 500);
             }
 
-            // İlk başlatma
             setTimeout(showNextMessage, 100);
         });
     </script>
