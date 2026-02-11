@@ -84,7 +84,7 @@
             width: 100%;
             max-width: 400px;
             border-radius: 24px;
-            padding: 40px 25px 25px 25px; /* Alt padding azaltıldı */
+            padding: 40px 25px 25px 25px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             position: relative;
@@ -186,11 +186,12 @@
         .social-footer {
             display: flex;
             justify-content: center;
-            gap: 25px;
+            gap: 20px; /* İkonlar arası boşluk */
             margin-top: 10px;
             border-top: 1px solid rgba(255,255,255,0.05);
             padding-top: 25px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .social-icon {
@@ -204,9 +205,11 @@
             transform: scale(1.1);
         }
 
+        /* İkon Renkleri */
         .social-icon.instagram:hover { color: #e1306c; }
         .social-icon.youtube:hover { color: #ff0000; }
         .social-icon.twitter:hover { color: #1da1f2; }
+        .social-icon.spotify:hover { color: #1DB954; } /* Spotify Yeşili */
 
         /* --- YAPIMCI İMZASI --- */
         .creator-credit {
@@ -275,6 +278,9 @@
             </a>
             <a href="https://x.com/YunusEmreGunduz" target="_blank" class="social-icon twitter" aria-label="X (Twitter)">
                 <i class="fab fa-x-twitter"></i>
+            </a>
+            <a href="https://open.spotify.com/show/0dY7wDgF4YGJe2sNOvFfIn" target="_blank" class="social-icon spotify" aria-label="Spotify Podcast">
+                <i class="fab fa-spotify"></i>
             </a>
         </div>
 
