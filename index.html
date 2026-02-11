@@ -1,1 +1,362 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yunus Emre Gündüz | Komedyen & Çizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent-color: #ff4757; 
+            --accent-hover: #ff6b81;
+            --ticket-btn-bg: #2ed573;
+            --ticket-btn-hover: #7bed9f;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden; /* Intro sırasında scroll engellemek için */
+        }
+
+        /* --- INTRO EKRANI STİLLERİ --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 1s ease-out, visibility 1s;
+        }
+
+        .intro-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-main);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        .intro-text.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .loader-line {
+            width: 0;
+            height: 3px;
+            background-color: var(--accent-color);
+            margin-top: 20px;
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+
+        /* --- ANA KART STİLLERİ --- */
+        .profile-card {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 24px;
+            padding: 40px 25px 25px 25px; /* Alt padding azaltıldı */
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            opacity: 0; /* Intro bitene kadar gizli */
+            transform: scale(0.95);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .profile-card.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .profile-img-container {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            border: 4px solid var(--accent-color);
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(255, 71, 87, 0.3);
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .title {
+            color: var(--accent-color);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .info-badges {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .bio {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            padding: 0 10px;
+        }
+
+        .links-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            gap: 10px;
+        }
+
+        .btn-ticket {
+            background-color: var(--ticket-btn-bg);
+            color: #121212;
+        }
+
+        .btn-ticket:hover {
+            background-color: var(--ticket-btn-hover);
+            transform: translateY(-2px);
+        }
+
+        .social-footer {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 25px;
+            margin-bottom: 20px;
+        }
+
+        .social-icon {
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .social-icon:hover {
+            color: var(--text-main);
+            transform: scale(1.1);
+        }
+
+        .social-icon.instagram:hover { color: #e1306c; }
+        .social-icon.youtube:hover { color: #ff0000; }
+        .social-icon.twitter:hover { color: #1da1f2; }
+
+        /* --- YAPIMCI İMZASI --- */
+        .creator-credit {
+            font-size: 0.75rem;
+            color: #4a4a4a;
+            margin-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.02);
+            padding-top: 15px;
+            font-weight: 300;
+        }
+
+        .creator-credit a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 400;
+        }
+
+        .creator-credit a:hover {
+            color: var(--accent-color);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="intro-overlay">
+        <div class="intro-text" id="intro-message">Yükleniyor...</div>
+        <div class="loader-line" id="loader-line"></div>
+    </div>
+
+    <div class="profile-card" id="main-card">
+        <div class="profile-img-container">
+            <img src="profile.jpg" alt="Yunus Emre Gündüz" class="profile-img">
+        </div>
+
+        <h1 class="name">Yunus Emre Gündüz</h1>
+        <p class="title">Komedyen & Karikatürist</p>
+
+        <div class="info-badges">
+            <span class="badge"><i class="fas fa-map-marker-alt"></i> İnegöl, Bursa</span>
+            <span class="badge" id="age-badge"><i class="fas fa-birthday-cake"></i> Hesaplar...</span>
+        </div>
+
+        <p class="bio">
+            Kısa komedi skeçleri ve karikatürleriyle tanınan illüstratör ve stand-up sanatçısı. 
+            Rick and Morty tarzı yerel çizimleriyle klasik karakterleri harmanlayarak mizahi senaryolar üretiyor. 
+            Mart 2015'ten beri içerik üreten Gündüz, Türkiye genelinde stand-up gösterilerine devam ediyor.
+        </p>
+
+        <div class="links-container">
+            <a href="https://biletinial.com/tr-tr/tiyatro/yunus-emre-gunduz-yunusun-odasi-interaktif-talk-show" target="_blank" class="btn btn-ticket">
+                <i class="fas fa-ticket-alt"></i> Biletinial - Bilet Al
+            </a>
+            <a href="https://www.bubilet.com.tr/sanatci/yunus-emre-gunduz" target="_blank" class="btn btn-ticket" style="background-color: #ff9f43; color: #121212;">
+                <i class="fas fa-ticket-alt"></i> BuBilet - Bilet Al
+            </a>
+        </div>
+
+        <div class="social-footer">
+            <a href="https://www.instagram.com/yunusemregunduz/" target="_blank" class="social-icon instagram" aria-label="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.youtube.com/channel/UCna9_me1UQAu3zbxv-dIhCQ" target="_blank" class="social-icon youtube" aria-label="YouTube">
+                <i class="fab fa-youtube"></i>
+            </a>
+            <a href="https://x.com/YunusEmreGunduz" target="_blank" class="social-icon twitter" aria-label="X (Twitter)">
+                <i class="fab fa-x-twitter"></i>
+            </a>
+        </div>
+
+        <div class="creator-credit">
+            Made by <a href="https://www.instagram.com/on_r19/" target="_blank">Onur Teryakioğlu</a>
+        </div>
+    </div>
+
+    <script>
+        // --- YAŞ HESAPLAMA ---
+        function calculateAge(birthDateString) {
+            const birthDate = new Date(birthDateString);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        // --- INTRO VE BAŞLANGIÇ ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // Yaşı yazdır
+            const birthDate = '1990-10-27';
+            const age = calculateAge(birthDate);
+            document.getElementById('age-badge').innerHTML = `<i class="fas fa-hourglass-half"></i> ${age} Yaşında`;
+
+            // Intro Animasyonu
+            const introOverlay = document.getElementById('intro-overlay');
+            const introMessage = document.getElementById('intro-message');
+            const loaderLine = document.getElementById('loader-line');
+            const mainCard = document.getElementById('main-card');
+            const body = document.body;
+
+            // Gösterilecek Mesajlar
+            const messages = [
+                "Anılar derleniyor...",
+                "Şakalar hazırlanıyor...",
+                "İnsanlar güldürülüyor...",
+                "Yunus Emre Gündüz"
+            ];
+
+            let step = 0;
+            const stepDuration = 1800; // Her mesajın ekranda kalma süresi (ms)
+
+            function showNextMessage() {
+                if (step < messages.length) {
+                    // Metni değiştir ve efekti tetikle
+                    introMessage.classList.remove('active');
+                    
+                    setTimeout(() => {
+                        introMessage.innerText = messages[step];
+                        introMessage.classList.add('active');
+                        
+                        // İlerleme çubuğunu güncelle
+                        const progress = ((step + 1) / messages.length) * 100;
+                        loaderLine.style.width = `${progress}%`;
+                        
+                        step++;
+                        setTimeout(showNextMessage, stepDuration);
+                    }, 500); // Fade out süresi kadar bekle
+                } else {
+                    // Intro bitti, ana ekranı aç
+                    finishIntro();
+                }
+            }
+
+            function finishIntro() {
+                introOverlay.style.opacity = '0';
+                introOverlay.style.visibility = 'hidden';
+                
+                // Ana kartı görünür yap
+                setTimeout(() => {
+                    mainCard.classList.add('visible');
+                    body.style.overflow = 'auto'; // Scroll'u tekrar aç
+                }, 500);
+            }
+
+            // İlk başlatma
+            setTimeout(showNextMessage, 100);
+        });
+    </script>
+</body>
+</html>
