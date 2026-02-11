@@ -30,7 +30,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             display: flex;
-            flex-direction: column; /* İçerik alt alta gelsin diye */
+            flex-direction: column;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
@@ -38,7 +38,7 @@
             position: relative;
         }
 
-        /* --- ARKA PLAN GÜLÜŞ EFEKTLERİ --- */
+        /* --- ARKA PLAN GÜLÜŞ EFEKTLERİ (GÜNCELLENDİ) --- */
         #laughter-bg {
             position: fixed;
             top: 0;
@@ -52,18 +52,29 @@
 
         .laugh-text {
             position: absolute;
-            color: rgba(255, 255, 255, 0.03); 
+            color: rgba(255, 255, 255, 0.15); /* Başlangıçta daha görünür */
             font-family: 'Permanent Marker', cursive, sans-serif;
             user-select: none;
             font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 71, 87, 0.2); /* Hafif neon etkisi */
             animation: floatLaugh linear infinite;
         }
 
         @keyframes floatLaugh {
-            0% { transform: translateY(100vh) rotate(0deg) scale(0.8); opacity: 0; }
-            20% { opacity: 0.15; }
-            80% { opacity: 0.15; }
-            100% { transform: translateY(-20vh) rotate(20deg) scale(1.2); opacity: 0; }
+            0% { 
+                transform: translateY(100vh) rotate(0deg) scale(0.8); 
+                opacity: 0; 
+            }
+            20% { 
+                opacity: 0.6; /* Çok daha belirgin */
+            }
+            80% { 
+                opacity: 0.6; 
+            }
+            100% { 
+                transform: translateY(-20vh) rotate(20deg) scale(1.2); 
+                opacity: 0; 
+            }
         }
 
         /* --- INTRO EKRANI --- */
@@ -121,7 +132,11 @@
             transform: scale(0.95);
             transition: opacity 1s ease, transform 1s ease;
             z-index: 10;
-            margin-bottom: 40px; /* Alttaki içerik için boşluk */
+            margin-bottom: 40px;
+            
+            /* Netlik düzeltmesi */
+            backface-visibility: hidden;
+            -webkit-font-smoothing: subpixel-antialiased;
         }
 
         .profile-card.visible {
@@ -137,12 +152,17 @@
             border: 4px solid var(--accent-color);
             overflow: hidden;
             box-shadow: 0 0 20px rgba(255, 71, 87, 0.3);
+            /* Görselin taşmasını önle */
+            position: relative;
+            z-index: 1;
         }
 
         .profile-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            /* Netlik için */
+            image-rendering: -webkit-optimize-contrast;
         }
 
         .name {
@@ -277,9 +297,14 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            opacity: 0; /* Başlangıçta gizli */
+            opacity: 0;
             transform: translateY(50px);
             transition: all 0.6s ease-out;
+            
+            /* Animasyon sırasındaki titremeyi önlemek ve netlik için */
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
 
         .info-card.visible {
@@ -292,6 +317,9 @@
             height: auto;
             display: block;
             border-bottom: 2px solid var(--accent-color);
+            /* Kalite artırıcı kodlar */
+            image-rendering: -webkit-optimize-contrast; 
+            image-rendering: crisp-edges;
         }
 
         .card-text {
@@ -381,7 +409,7 @@
         </div>
 
         <div class="info-card scroll-reveal">
-             <img src="img2.png" alt="Çizimler" class="card-img">
+            <img src="img2.png" alt="Çizimler" class="card-img">
             <div class="card-text">
                 <h3>Çizgilerin Gücü</h3>
                 <p>Kendi yarattığı karakterler ve Rick and Morty esintili evreniyle sosyal medyada fenomen oldu. Sadece güldürmekle kalmıyor, çizgileriyle günlük hayatın absürtlüklerine de ayna tutuyor.</p>
@@ -389,7 +417,7 @@
         </div>
 
         <div class="info-card scroll-reveal">
-             <img src="img3.png" alt="Animasyon" class="card-img">
+            <img src="img3.png" alt="Animasyon" class="card-img">
             <div class="card-text">
                 <h3>Yaratıcı Beyin</h3>
                 <p>"Yaşlandın be Yunus'um!" dediklerine bakmayın; o her zaman genç ve dinamik bir mizah anlayışına sahip. Animasyonları ve skeçleri, her yaştan izleyiciye hitap etmeyi başarıyor.</p>
@@ -397,7 +425,7 @@
         </div>
 
          <div class="info-card scroll-reveal">
-            <img src="img4.png" alt="Yunus Emre" class="card-img">
+           <img src="img4.png" alt="Yunus Emre" class="card-img">
            <div class="card-text">
                <h3>Doğal ve Samimi</h3>
                <p>İnegöl'den çıkan bu yetenek, samimiyeti ve doğallığı elden bırakmadan kariyer basamaklarını tırmanıyor. Hem ekran başında hem de sahnede, o bizden biri.</p>
@@ -429,13 +457,20 @@
                 const span = document.createElement('span');
                 span.classList.add('laugh-text');
                 span.innerText = words[Math.floor(Math.random() * words.length)];
+                
+                // Konum ve boyut
                 span.style.left = Math.random() * 100 + 'vw';
                 const size = 1 + Math.random() * 3;
                 span.style.fontSize = size + 'rem';
+                
+                // Animasyon süresi
                 const duration = 5 + Math.random() * 10;
                 span.style.animationDuration = duration + 's';
+                
+                // Gecikme
                 const delay = Math.random() * 5;
                 span.style.animationDelay = '-' + delay + 's';
+                
                 container.appendChild(span);
             }
         }
@@ -444,21 +479,21 @@
         function checkScroll() {
             const reveals = document.querySelectorAll('.scroll-reveal');
             const windowHeight = window.innerHeight;
-            const elementVisible = 100;
+            const elementVisible = 50; // Biraz daha erken tetiklenmesi için düşürdüm
 
             reveals.forEach((reveal) => {
                 const elementTop = reveal.getBoundingClientRect().top;
                 if (elementTop < windowHeight - elementVisible) {
                     reveal.classList.add('visible');
                 } else {
-                    reveal.classList.remove('visible'); // Yukarı çıkınca tekrar gizlenmesi için (isteğe bağlı)
+                    // reveal.classList.remove('visible'); // İstersen bu satırı silerek yukarı çıkınca kaybolmasını engelleyebilirsin
                 }
             });
         }
 
         // --- INTRO VE BAŞLANGIÇ ---
         document.addEventListener('DOMContentLoaded', function() {
-            // Yaşı yazdır (Düzeltildi: 1994)
+            // Yaşı yazdır
             const birthDate = '1994-10-27';
             const age = calculateAge(birthDate);
             document.getElementById('age-badge').innerHTML = `<i class="fas fa-birthday-cake"></i> ${age} Yaşında`;
@@ -510,7 +545,6 @@
                 introOverlay.style.visibility = 'hidden';
                 setTimeout(() => {
                     mainCard.classList.add('visible');
-                    // Intro bitince ilk kontrolü yap ki ekrandaki kartlar görünsün
                     checkScroll(); 
                 }, 500);
             }
